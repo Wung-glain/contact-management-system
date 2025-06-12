@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { ContactCard } from '@/components/ContactCard';
 import { ContactForm } from '@/components/ContactForm';
@@ -7,6 +6,7 @@ import { FilterDropdown } from '@/components/FilterDropdown';
 import { AddContactButton } from '@/components/AddContactButton';
 import { EmptyState } from '@/components/EmptyState';
 import { useToast } from '@/hooks/use-toast';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export interface Contact {
   id: string;
@@ -99,8 +99,13 @@ const Index = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Contacts</h1>
-          <p className="text-muted-foreground">Manage your personal and professional contacts</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-foreground mb-2">Contacts</h1>
+              <p className="text-muted-foreground">Manage your personal and professional contacts</p>
+            </div>
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Controls */}
