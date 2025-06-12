@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { ContactCard } from '@/components/ContactCard';
 import { ContactForm } from '@/components/ContactForm';
@@ -5,8 +6,8 @@ import { SearchBar } from '@/components/SearchBar';
 import { FilterDropdown } from '@/components/FilterDropdown';
 import { AddContactButton } from '@/components/AddContactButton';
 import { EmptyState } from '@/components/EmptyState';
-import { useToast } from '@/hooks/use-toast';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useContacts } from '@/hooks/useContacts';
 
 export interface Contact {
   id: string;
@@ -20,12 +21,20 @@ export interface Contact {
 }
 
 const Index = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
-  const { toast } = useToast();
+
+  const { 
+    contacts, 
+    isLoading, 
+    addContact, 
+    updateContact, 
+    deleteContact,
+    isAddingContact,
+    isUpdatingContact 
+  } = useContacts();
 
   const filteredContacts = useMemo(() => {
     return contacts.filter(contact => {
@@ -40,43 +49,20 @@ const Index = () => {
   }, [contacts, searchTerm, filterCategory]);
 
   const handleAddContact = (contactData: Omit<Contact, 'id' | 'createdAt'>) => {
-    const newContact: Contact = {
-      ...contactData,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-    };
-    setContacts(prev => [...prev, newContact]);
+    addContact(contactData);
     setIsFormOpen(false);
-    toast({
-      title: "Contact added",
-      description: `${contactData.name} has been added to your contacts.`,
-    });
   };
 
   const handleEditContact = (contactData: Omit<Contact, 'id' | 'createdAt'>) => {
     if (!editingContact) return;
     
-    setContacts(prev => prev.map(contact => 
-      contact.id === editingContact.id 
-        ? { ...contact, ...contactData }
-        : contact
-    ));
+    updateContact({ id: editingContact.id, ...contactData });
     setEditingContact(null);
     setIsFormOpen(false);
-    toast({
-      title: "Contact updated",
-      description: `${contactData.name} has been updated.`,
-    });
   };
 
   const handleDeleteContact = (id: string) => {
-    const contact = contacts.find(c => c.id === id);
-    setContacts(prev => prev.filter(contact => contact.id !== id));
-    toast({
-      title: "Contact deleted",
-      description: `${contact?.name} has been removed from your contacts.`,
-      variant: "destructive",
-    });
+    deleteContact(id);
   };
 
   const openEditForm = (contact: Contact) => {
@@ -93,6 +79,17 @@ const Index = () => {
     setIsFormOpen(false);
     setEditingContact(null);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading contacts...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -145,6 +142,7 @@ const Index = () => {
           onSubmit={editingContact ? handleEditContact : handleAddContact}
           initialData={editingContact}
           mode={editingContact ? 'edit' : 'add'}
+          isSubmitting={isAddingContact || isUpdatingContact}
         />
       </div>
     </div>

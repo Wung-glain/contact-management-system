@@ -13,9 +13,10 @@ interface ContactFormProps {
   onSubmit: (contact: Omit<Contact, 'id' | 'createdAt'>) => void;
   initialData?: Contact | null;
   mode: 'add' | 'edit';
+  isSubmitting?: boolean;
 }
 
-export const ContactForm = ({ isOpen, onClose, onSubmit, initialData, mode }: ContactFormProps) => {
+export const ContactForm = ({ isOpen, onClose, onSubmit, initialData, mode, isSubmitting = false }: ContactFormProps) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -87,6 +88,7 @@ export const ContactForm = ({ isOpen, onClose, onSubmit, initialData, mode }: Co
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 placeholder="Enter full name"
                 required
+                disabled={isSubmitting}
                 className="mt-1"
               />
             </div>
@@ -100,6 +102,7 @@ export const ContactForm = ({ isOpen, onClose, onSubmit, initialData, mode }: Co
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 placeholder="Enter email address"
                 required
+                disabled={isSubmitting}
                 className="mt-1"
               />
             </div>
@@ -112,6 +115,7 @@ export const ContactForm = ({ isOpen, onClose, onSubmit, initialData, mode }: Co
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 placeholder="Enter phone number"
+                disabled={isSubmitting}
                 className="mt-1"
               />
             </div>
@@ -123,6 +127,7 @@ export const ContactForm = ({ isOpen, onClose, onSubmit, initialData, mode }: Co
                 value={formData.company}
                 onChange={(e) => handleInputChange('company', e.target.value)}
                 placeholder="Enter company name"
+                disabled={isSubmitting}
                 className="mt-1"
               />
             </div>
@@ -132,6 +137,7 @@ export const ContactForm = ({ isOpen, onClose, onSubmit, initialData, mode }: Co
               <Select 
                 value={formData.category} 
                 onValueChange={(value) => handleInputChange('category', value)}
+                disabled={isSubmitting}
               >
                 <SelectTrigger className="mt-1">
                   <SelectValue />
@@ -152,15 +158,23 @@ export const ContactForm = ({ isOpen, onClose, onSubmit, initialData, mode }: Co
               variant="outline"
               onClick={onClose}
               className="flex-1"
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="flex-1"
-              disabled={!formData.name.trim() || !formData.email.trim()}
+              disabled={!formData.name.trim() || !formData.email.trim() || isSubmitting}
             >
-              {mode === 'add' ? 'Add Contact' : 'Save Changes'}
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  {mode === 'add' ? 'Adding...' : 'Saving...'}
+                </div>
+              ) : (
+                mode === 'add' ? 'Add Contact' : 'Save Changes'
+              )}
             </Button>
           </div>
         </form>
