@@ -14,7 +14,7 @@ Simply visit the [Lovable Project](https://lovable.dev/projects/31ba714e-25c8-46
 
 Changes made via Lovable will be committed automatically to this repo.
 
-**Use your preferred IDE**
+**How to run this project locally**
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
@@ -24,16 +24,21 @@ Follow these steps:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone https://github.com/Wung-glain/smart-address-book.git
 
 # Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+cd smart-address-book
 
 # Step 3: Install the necessary dependencies.
-npm i
+npm install
 
 # Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
+# Step 5: Add a .env file in the root directory
+touch .env
+# Step 6: Add the following enviromental variables in your .env file
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 **Edit a file directly in GitHub**
