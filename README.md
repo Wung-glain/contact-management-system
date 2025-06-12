@@ -21,22 +21,29 @@ If you want to work locally using your own IDE, you can clone this repo and push
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 Follow these steps:
-
-```sh
 # Step 1: Clone the repository using the project's Git URL.
+```sh
 git clone https://github.com/Wung-glain/smart-address-book.git
-
+```
 # Step 2: Navigate to the project directory.
+```
 cd smart-address-book
-
+```
 # Step 3: Install the necessary dependencies.
+```
 npm install
+```
 
 # Step 4: Start the development server with auto-reloading and an instant preview.
+```
 npm run dev
+```
 # Step 5: Add a .env file in the root directory
+```
 touch .env
-# Step 6: Add the following enviromental variables in your .env file
+```
+# Step 6: Add the following enviromental variables to your .env file
+```
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
