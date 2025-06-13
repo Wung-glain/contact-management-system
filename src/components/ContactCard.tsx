@@ -3,16 +3,15 @@ import { Contact } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash, Star } from 'lucide-react';
+import { Edit, Trash, User } from 'lucide-react';
 
 interface ContactCardProps {
   contact: Contact;
   onEdit: (contact: Contact) => void;
   onDelete: (id: string) => void;
-  onToggleFavorite: (id: string) => void;
 }
 
-export const ContactCard = ({ contact, onEdit, onDelete, onToggleFavorite }: ContactCardProps) => {
+export const ContactCard = ({ contact, onEdit, onDelete }: ContactCardProps) => {
   const getCategoryColor = (category: string) => {
     const colors = {
       work: 'bg-blue-100 text-blue-800',
@@ -53,16 +52,6 @@ export const ContactCard = ({ contact, onEdit, onDelete, onToggleFavorite }: Con
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onToggleFavorite(contact.id)}
-              className={`h-8 w-8 p-0 hover:bg-secondary ${
-                contact.is_favorite ? 'text-yellow-500' : 'text-muted-foreground'
-              }`}
-            >
-              <Star className={`h-4 w-4 ${contact.is_favorite ? 'fill-current' : ''}`} />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
               onClick={() => onEdit(contact)}
               className="h-8 w-8 p-0 hover:bg-secondary"
             >
@@ -82,12 +71,7 @@ export const ContactCard = ({ contact, onEdit, onDelete, onToggleFavorite }: Con
         {/* Contact Info */}
         <div className="space-y-3">
           <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-foreground text-lg leading-tight">{contact.name}</h3>
-              {contact.is_favorite && (
-                <Star className="h-4 w-4 text-yellow-500 fill-current" />
-              )}
-            </div>
+            <h3 className="font-semibold text-foreground text-lg leading-tight">{contact.name}</h3>
             {contact.company && (
               <p className="text-sm text-muted-foreground">{contact.company}</p>
             )}

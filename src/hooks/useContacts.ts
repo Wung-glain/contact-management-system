@@ -44,8 +44,7 @@ export const useContacts = () => {
           phone: contactData.phone || null,
           company: contactData.company || null,
           category: contactData.category,
-          avatar: contactData.avatar || null,
-          is_favorite: contactData.is_favorite || false
+          avatar: contactData.avatar || null
         })
         .select()
         .single()
@@ -87,8 +86,7 @@ export const useContacts = () => {
           phone: contactData.phone || null,
           company: contactData.company || null,
           category: contactData.category,
-          avatar: contactData.avatar || null,
-          is_favorite: contactData.is_favorite || false
+          avatar: contactData.avatar || null
         })
         .eq('id', id)
         .select()
@@ -114,45 +112,6 @@ export const useContacts = () => {
       toast({
         title: "Error",
         description: "Failed to update contact. Please try again.",
-        variant: "destructive",
-      })
-    }
-  })
-
-  // Toggle favorite mutation
-  const toggleFavoriteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const contact = contacts.find(c => c.id === id)
-      if (!contact) throw new Error('Contact not found')
-
-      console.log('Toggling favorite for contact:', id)
-      const { data, error } = await supabase
-        .from('contacts')
-        .update({ is_favorite: !contact.is_favorite })
-        .eq('id', id)
-        .select()
-        .single()
-
-      if (error) {
-        console.error('Error toggling favorite:', error)
-        throw error
-      }
-
-      console.log('Favorite toggled successfully:', data)
-      return data
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['contacts'] })
-      toast({
-        title: data.is_favorite ? "Added to favorites" : "Removed from favorites",
-        description: `${data.name} has been ${data.is_favorite ? 'added to' : 'removed from'} your favorites.`,
-      })
-    },
-    onError: (error) => {
-      console.error('Failed to toggle favorite:', error)
-      toast({
-        title: "Error",
-        description: "Failed to update favorite status. Please try again.",
         variant: "destructive",
       })
     }
@@ -201,7 +160,6 @@ export const useContacts = () => {
     addContact: addContactMutation.mutate,
     updateContact: updateContactMutation.mutate,
     deleteContact: deleteContactMutation.mutate,
-    toggleFavorite: toggleFavoriteMutation.mutate,
     isAddingContact: addContactMutation.isPending,
     isUpdatingContact: updateContactMutation.isPending,
     isDeletingContact: deleteContactMutation.isPending
