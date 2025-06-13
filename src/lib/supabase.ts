@@ -1,14 +1,7 @@
 
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/integrations/supabase/client'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export { supabase }
 
 export type Database = {
   public: {
@@ -23,6 +16,7 @@ export type Database = {
           category: 'work' | 'personal' | 'family' | 'other'
           avatar: string | null
           created_at: string
+          is_favorite: boolean | null
         }
         Insert: {
           id?: string
@@ -33,6 +27,7 @@ export type Database = {
           category: 'work' | 'personal' | 'family' | 'other'
           avatar?: string | null
           created_at?: string
+          is_favorite?: boolean | null
         }
         Update: {
           id?: string
@@ -43,6 +38,7 @@ export type Database = {
           category?: 'work' | 'personal' | 'family' | 'other'
           avatar?: string | null
           created_at?: string
+          is_favorite?: boolean | null
         }
       }
     }
