@@ -7,6 +7,7 @@ import { FilterDropdown } from '@/components/FilterDropdown';
 import { AddContactButton } from '@/components/AddContactButton';
 import { EmptyState } from '@/components/EmptyState';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { ExportContacts } from '@/components/ExportContacts';
 import { useContacts } from '@/hooks/useContacts';
 
 export interface Contact {
@@ -17,12 +18,14 @@ export interface Contact {
   company: string;
   category: 'work' | 'personal' | 'family' | 'other';
   avatar?: string;
+  is_favorite?: boolean;
   createdAt: Date;
 }
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [showFavorites, setShowFavorites] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
 
@@ -32,6 +35,7 @@ const Index = () => {
     addContact, 
     updateContact, 
     deleteContact,
+    toggleFavorite,
     isAddingContact,
     isUpdatingContact 
   } = useContacts();
@@ -43,10 +47,13 @@ const Index = () => {
                            contact.company.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesFilter = filterCategory === 'all' || contact.category === filterCategory;
+      const matchesFavorites = !showFavorites || contact.is_favorite;
       
-      return matchesSearch && matchesFilter;
+      return matchesSearch && matchesFilter && matchesFavorites;
     });
-  }, [contacts, searchTerm, filterCategory]);
+  }, [contacts, searchTerm, filterCategory, showFavorites]);
+
+  const favoriteContacts = contacts.filter(contact => contact.is_favorite);
 
   const handleAddContact = (contactData: Omit<Contact, 'id' | 'createdAt'>) => {
     addContact(contactData);
@@ -63,6 +70,10 @@ const Index = () => {
 
   const handleDeleteContact = (id: string) => {
     deleteContact(id);
+  };
+
+  const handleToggleFavorite = (id: string) => {
+    toggleFavorite(id);
   };
 
   const openEditForm = (contact: Contact) => {
@@ -112,7 +123,29 @@ const Index = () => {
           </div>
           <div className="flex gap-3">
             <FilterDropdown filterCategory={filterCategory} onFilterChange={setFilterCategory} />
+            <ExportContacts contacts={contacts} />
             <AddContactButton onClick={openAddForm} />
+          </div>
+        </div>
+
+        {/* Favorites toggle */}
+        <div className="mb-6">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setShowFavorites(!showFavorites)}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                showFavorites 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              ⭐ Favorites ({favoriteContacts.length})
+            </button>
+            {showFavorites && (
+              <span className="text-sm text-muted-foreground">
+                Showing favorite contacts only
+              </span>
+            )}
           </div>
         </div>
 
@@ -125,6 +158,7 @@ const Index = () => {
                 contact={contact}
                 onEdit={openEditForm}
                 onDelete={handleDeleteContact}
+                onToggleFavorite={handleToggleFavorite}
               />
             ))}
           </div>
